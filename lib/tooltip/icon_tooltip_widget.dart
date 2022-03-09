@@ -3,6 +3,46 @@ import 'dart:core';
 import 'package:flutter/material.dart';
 import 'package:flutter_baloon_overlay/tooltip/overlay/baloon_overlay.dart';
 
+/// ## IconPopupTooltipWidget
+///
+///
+/// [tooltipKey] is used to identify the icon widget,
+/// later this will be used to calculate popup position.
+/// If [tooltipKey] is null, the icon will be hidden.
+///
+/// [tooltipText] is the text that will be shown in popup.
+///
+/// [icon] is the icon that the user will click to show the popup.
+///
+/// [height] is the popup height.
+///
+/// [padding] the padding of the popup content.
+///
+/// [backgroundColor] is the popup backgroundColor.
+/// If [backgroundColor] is null the color will be the default grey.
+///
+/// [textStyle] is the style of the text inside the popup.
+///
+/// [borderRadius] is the radius of the popup border
+///
+/// #### Example:
+///
+/// ```dart
+/// IconPopupTooltipWidget(
+///   tooltipKey: GlobalKey(),
+///   tooltipText: 'Mini text',
+///   height: 52,
+///   padding: const EdgeInsets.symmetric(
+///     horizontal: 20,
+///     vertical: 12,
+///   ),
+///   icon: Icon(
+///     Icons.info_outline_rounded,
+///     color: Colors.blue.shade500,
+///     size: 26,
+///   ),
+/// ),
+///```
 class IconPopupTooltipWidget extends StatelessWidget {
   final GlobalKey? tooltipKey;
   final String tooltipText;

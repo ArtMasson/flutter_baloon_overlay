@@ -5,10 +5,10 @@ import 'package:flutter/material.dart';
 /// [TrianglePainter] is custom painter for drawing a triangle for popup
 /// to point specific widget
 class TrianglePainter extends CustomPainter {
-  bool isDownArrow;
+  bool isArrowDown;
   Color color;
 
-  TrianglePainter({this.isDownArrow = true, required this.color});
+  TrianglePainter({this.isArrowDown = true, required this.color});
 
   /// Draws the triangle of specific [size] on [canvas]
   @override
@@ -19,7 +19,7 @@ class TrianglePainter extends CustomPainter {
     paint.color = color;
     paint.style = PaintingStyle.fill;
 
-    if (isDownArrow) {
+    if (isArrowDown) {
       path.moveTo(0.0, -1.0);
       path.lineTo(size.width, -1.0);
       path.lineTo(size.width / 2.0, size.height);

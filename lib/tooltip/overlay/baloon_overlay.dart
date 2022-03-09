@@ -5,6 +5,28 @@ import 'package:flutter/material.dart';
 
 import 'baloon_overlay_helper.dart';
 
+/// #### Example:
+///
+/// ```dart
+/// BaloonOverlay popup = BaloonOverlay(
+///   context: context,
+///   text: tooltipText,
+///   textStyle: textStyle ??
+///       const TextStyle(
+///         color: Colors.white,
+///         fontWeight: FontWeight.bold,
+///         fontSize: 12,
+///       ),
+///   height: height,
+///   backgroundColor: backgroundColor ?? const Color(0xCC3A3A48),
+///   padding: padding,
+///   borderRadius: borderRadius ?? BorderRadius.circular(4),
+///   closeIconColor: Colors.white,
+/// );
+/// popup.show(
+///   widgetKey: tooltipKey!,
+/// );
+///```
 class BaloonOverlay {
   final Color closeIconColor;
 

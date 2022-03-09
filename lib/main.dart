@@ -100,7 +100,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   horizontal: 20,
                   vertical: 12,
                 ),
-                title: 'See more info',
+                btnTitle: 'See more info',
               ),
             ],
           ),

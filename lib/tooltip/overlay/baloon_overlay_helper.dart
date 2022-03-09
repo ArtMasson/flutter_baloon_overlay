@@ -143,7 +143,7 @@ class BaloonOverlayHelper {
               child: CustomPaint(
                 size: Size(15.0, arrowHeight),
                 painter: TrianglePainter(
-                  isDownArrow: isArrowDown,
+                  isArrowDown: isArrowDown,
                   color: backgroundColor,
                 ),
               ),
