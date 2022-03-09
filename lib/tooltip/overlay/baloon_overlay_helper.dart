@@ -278,12 +278,6 @@ class BaloonOverlayHelper {
       decoration: BoxDecoration(
         color: backgroundColor,
         borderRadius: borderRadius,
-        boxShadow: const [
-          BoxShadow(
-            color: Color(0xFF808080),
-            blurRadius: 1.0,
-          ),
-        ],
       ),
       child: FittedBox(
         child: Row(
