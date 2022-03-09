@@ -85,20 +85,17 @@ class BaloonOverlayHelper {
     RenderBox renderBox =
         widgetKey.currentContext!.findRenderObject() as RenderBox;
     var offset = renderBox.localToGlobal(Offset.zero);
-
-    var centerWidgetFather = widgetRect.left + widgetRect.width / 2.0 - 7.5;
-
     if (isInCenter) {
-      offsetLeft = centerWidgetFather - 7.5;
+      offsetLeft = offset.dx - 7.5;
 
       offsetRight = screenSize.width - (offset.dx + renderBox.size.width);
     }
     if (haveOffsetRight) {
-      offsetLeft = centerWidgetFather / 2;
+      offsetLeft = offset.dx / 2;
 
       offsetRight = screenSize.width - (offset.dx + renderBox.size.width);
     } else {
-      offsetLeft = centerWidgetFather - 7.5;
+      offsetLeft = offset.dx;
 
       offsetRight = 0;
     }
