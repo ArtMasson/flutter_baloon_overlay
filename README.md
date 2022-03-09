@@ -1,16 +1,13 @@
-# flutter_baloon_overlay
+# Baloon Overlay - Flutter
 
-A new Flutter project.
+This component was created because it is hard to find a responsive popup component.
 
-## Getting Started
+Future updates will improve code readability and component modularization and customization.
 
-This project is a starting point for a Flutter application.
+# Compatibility
 
-A few resources to get you started if this is your first Flutter project:
+Works in all flutter platforms.
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+## GIF
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+![20220309_125305](https://user-images.githubusercontent.com/44551981/157478349-8a3bfe75-1102-4f3f-99de-bbb3c1ca2e22.gif)
