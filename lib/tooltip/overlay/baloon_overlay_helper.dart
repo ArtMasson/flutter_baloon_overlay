@@ -35,7 +35,6 @@ class BaloonOverlayHelper {
     required double width,
     required double height,
     required double arrowHeight,
-    required bool isArrowDown,
   }) {
     double dx = widgetRect.left + widgetRect.width / 2.0 - width / 2.0;
     if (dx < 10.0) {
@@ -51,22 +50,37 @@ class BaloonOverlayHelper {
     if (dy <= MediaQuery.of(context).padding.top + 50) {
       // not enough space above, show popup under the widget.
       dy = arrowHeight + widgetRect.height + widgetRect.top;
-      isArrowDown = false;
     } else {
       dy -= arrowHeight;
-      isArrowDown = true;
     }
 
     return Offset(dx, dy);
   }
 
-  static void calculateVerticalOffset({
+  static bool isArrowDown({
+    required BuildContext context,
+    required double arrowHeight,
+    required Rect widgetRect,
+    required double height,
+  }) {
+    bool haveEnoughtHeight = false;
+    double dy = widgetRect.top - height;
+
+    // not enough space above, show popup under the widget.
+    if (dy <= MediaQuery.of(context).padding.top + 50) {
+      haveEnoughtHeight = false;
+    } else {
+      haveEnoughtHeight = true;
+    }
+    return haveEnoughtHeight;
+  }
+
+  static List<double> calculateVerticalOffset({
     required GlobalKey widgetKey,
     required Rect widgetRect,
     required Size screenSize,
     required double offsetLeft,
     required double offsetRight,
-    required double width,
     required bool haveOffsetRight,
     required bool isInCenter,
   }) {
@@ -75,8 +89,6 @@ class BaloonOverlayHelper {
     var offset = renderBox.localToGlobal(Offset.zero);
 
     var centerWidgetFather = widgetRect.left + widgetRect.width / 2.0 - 7.5;
-    haveOffsetRight = widgetHaveRightOffset(key: widgetKey, width: width);
-    isInCenter = widgetIsInCenter(key: widgetKey, width: width);
 
     if (isInCenter) {
       offsetLeft = centerWidgetFather - 7.5;
@@ -92,5 +104,7 @@ class BaloonOverlayHelper {
 
       offsetRight = 0;
     }
+
+    return [offsetLeft, offsetRight];
   }
 }
