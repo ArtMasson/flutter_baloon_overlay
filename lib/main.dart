@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_baloon_overlay/tooltip/button_tooltip_widget.dart';
 
 import 'tooltip/icon_tooltip_widget.dart';
 
@@ -39,137 +40,70 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            IconPopupTooltipWidget(
-              tooltipKey: GlobalKey(),
-              tooltipText:
-                  'Just 1 baby per adult is possible (carrying on the lap).\nFor more than 1, please contact us.',
-              height: 52,
-              padding: const EdgeInsets.symmetric(
-                horizontal: 20,
-                vertical: 12,
-              ),
-              icon: Icon(
-                Icons.info_outline_rounded,
-                color: Colors.blue.shade500,
-                size: 26,
-              ),
-            ),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: IconPopupTooltipWidget(
-                tooltipKey: GlobalKey(),
-                tooltipText:
-                    'Crianças não podem viajar sem um adulto.\nPara exceções, entre em contato conosco.',
-                height: 52,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 20,
-                  vertical: 12,
-                ),
-                icon: Icon(
-                  Icons.info_outline_rounded,
-                  color: Colors.blue.shade500,
-                  size: 26,
-                ),
-              ),
-            ),
-            Align(
-              alignment: Alignment.centerRight,
-              child: IconPopupTooltipWidget(
-                tooltipKey: GlobalKey(),
-                tooltipText:
-                    'Só é possível reservar voo para o máximo de 9 passageiros',
-                height: 52,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 20,
-                  vertical: 12,
-                ),
-                icon: Icon(
-                  Icons.info_outline_rounded,
-                  color: Colors.blue.shade500,
-                  size: 26,
-                ),
-              ),
-            ),
-            Align(
-              alignment: Alignment.centerRight,
-              child: IconPopupTooltipWidget(
-                tooltipKey: GlobalKey(),
-                tooltipText: 'Voo de volta',
-                height: 52,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 20,
-                  vertical: 12,
-                ),
-                icon: Icon(
-                  Icons.info_outline_rounded,
-                  color: Colors.blue.shade500,
-                  size: 26,
-                ),
-              ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 200),
-                    child: IconPopupTooltipWidget(
-                      tooltipKey: GlobalKey(),
-                      tooltipText: 'Bem no lado',
-                      height: 52,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 20,
-                        vertical: 12,
-                      ),
-                      icon: Icon(
-                        Icons.info_outline_rounded,
-                        color: Colors.blue.shade500,
-                        size: 26,
-                      ),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  IconPopupTooltipWidget(
+                    tooltipKey: GlobalKey(),
+                    tooltipText:
+                        'This container will adjust the text size according to text lenght',
+                    height: 52,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 12,
+                    ),
+                    icon: Icon(
+                      Icons.info_outline_rounded,
+                      color: Colors.blue.shade500,
+                      size: 26,
                     ),
                   ),
-                ),
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: Padding(
-                    padding: const EdgeInsets.only(right: 200),
-                    child: IconPopupTooltipWidget(
-                      tooltipKey: GlobalKey(),
-                      tooltipText: 'Bem no lado',
-                      height: 52,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 20,
-                        vertical: 12,
-                      ),
-                      icon: Icon(
-                        Icons.info_outline_rounded,
-                        color: Colors.blue.shade500,
-                        size: 26,
-                      ),
+                  IconPopupTooltipWidget(
+                    tooltipKey: GlobalKey(),
+                    tooltipText: 'This is the medium text',
+                    height: 52,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 12,
+                    ),
+                    icon: Icon(
+                      Icons.info_outline_rounded,
+                      color: Colors.blue.shade500,
+                      size: 26,
                     ),
                   ),
+                  IconPopupTooltipWidget(
+                    tooltipKey: GlobalKey(),
+                    tooltipText: 'Mini text',
+                    height: 52,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 12,
+                    ),
+                    icon: Icon(
+                      Icons.info_outline_rounded,
+                      color: Colors.blue.shade500,
+                      size: 26,
+                    ),
+                  ),
+                ],
+              ),
+              ButtonTooltipWidget(
+                tooltipKey: GlobalKey(),
+                tooltipText: 'This is the button popup widget',
+                height: 52,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 12,
                 ),
-              ],
-            ),
-            IconPopupTooltipWidget(
-              tooltipKey: GlobalKey(),
-              tooltipText: 'Voo de ida',
-              height: 52,
-              padding: const EdgeInsets.symmetric(
-                horizontal: 20,
-                vertical: 12,
+                title: 'See more info',
               ),
-              icon: Icon(
-                Icons.info_outline_rounded,
-                color: Colors.blue.shade500,
-                size: 26,
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

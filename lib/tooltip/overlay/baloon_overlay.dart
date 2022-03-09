@@ -2,15 +2,8 @@ import 'dart:core';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_baloon_overlay/tooltip/overlay/triangle_painter.dart';
 
 import 'baloon_overlay_helper.dart';
-
-enum parentPosition {
-  left,
-  center,
-  right,
-}
 
 class BaloonOverlay {
   final Color closeIconColor;
@@ -25,15 +18,9 @@ class BaloonOverlay {
   final EdgeInsetsGeometry padding;
 
   late OverlayEntry _entry;
-  late double _width;
-
-  late bool _isInCenter;
 
   VoidCallback? dismissCallback;
   bool _isVisible = false;
-
-  double _offsetLeft = 0;
-  double _offsetRight = 0;
 
   BaloonOverlay({
     required this.context,
@@ -55,219 +42,75 @@ class BaloonOverlay {
     var widgetRect =
         rect ?? BaloonOverlayHelper.getWidgetGlobalRect(widgetKey!);
     var screenSize = window.physicalSize / window.devicePixelRatio;
-    _width = screenSize.width;
+    var width = screenSize.width;
 
-    var offset = BaloonOverlayHelper.calculateOffset(
+    var offsetTop = BaloonOverlayHelper.calculateTopOffset(
       context: context,
       arrowHeight: arrowHeight,
       height: height,
       screenSize: screenSize,
       widgetRect: widgetRect,
-      width: _width,
+      width: width,
     );
 
-    var _isArrowDown = BaloonOverlayHelper.isArrowDown(
+    var isArrowDown = BaloonOverlayHelper.isArrowDown(
       context: context,
       arrowHeight: arrowHeight,
       widgetRect: widgetRect,
       height: height,
     );
 
-    var _haveOffsetRight = BaloonOverlayHelper.widgetHaveRightOffset(
+    var haveOffsetRight = BaloonOverlayHelper.widgetHaveRightOffset(
       key: widgetKey!,
-      width: _width,
+      width: width,
     );
-    _isInCenter = BaloonOverlayHelper.widgetIsInCenter(
+    var isInCenter = BaloonOverlayHelper.widgetIsInCenter(
       key: widgetKey,
-      width: _width,
+      width: width,
     );
 
     var verticalOffsets = BaloonOverlayHelper.calculateVerticalOffset(
       widgetKey: widgetKey,
-      haveOffsetRight: _haveOffsetRight,
-      isInCenter: _isInCenter,
-      offsetLeft: _offsetLeft,
-      offsetRight: _offsetRight,
+      haveOffsetRight: haveOffsetRight,
+      isInCenter: isInCenter,
       screenSize: screenSize,
       widgetRect: widgetRect,
     );
 
-    _offsetLeft = verticalOffsets[0];
-    _offsetRight = verticalOffsets[1];
+    var offsetLeft = verticalOffsets[0];
+    var offsetRight = verticalOffsets[1];
+
+    ParentPosition position = isInCenter
+        ? ParentPosition.center
+        : haveOffsetRight
+            ? ParentPosition.right
+            : ParentPosition.left;
 
     _entry = OverlayEntry(
       builder: (context) {
-        return buildPopupLayout(
-          offset: offset,
+        return BaloonOverlayHelper.buildPopupLayout(
+          context: context,
           parentRect: widgetRect,
-          isArrowDown: _isArrowDown,
+          width: width,
+          offsetTop: offsetTop,
+          isArrowDown: isArrowDown,
           arrowHeight: arrowHeight,
-          haveOffsetRight: _haveOffsetRight,
+          offsetLeft: offsetLeft,
+          offsetRight: offsetRight,
+          position: position,
+          backgroundColor: backgroundColor,
+          borderRadius: borderRadius,
+          dismiss: dismiss,
+          height: height,
+          padding: padding,
+          text: text,
+          textStyle: textStyle,
         );
       },
     );
 
     Overlay.of(context)!.insert(_entry);
     _isVisible = true;
-  }
-
-  /// Builds popup for specific [offset]
-  Widget buildPopupLayout({
-    required Offset offset,
-    required Rect parentRect,
-    required bool isArrowDown,
-    required double arrowHeight,
-    required bool haveOffsetRight,
-  }) {
-    var centerWidgetFather = parentRect.left + parentRect.width / 2.0 - 7.5;
-
-    return GestureDetector(
-      behavior: HitTestBehavior.translucent,
-      onTap: () {
-        dismiss();
-      },
-      child: Material(
-        color: Colors.transparent,
-        child: Stack(
-          children: <Widget>[
-            // triangle arrow
-            Positioned(
-              left: centerWidgetFather,
-              top: isArrowDown ? offset.dy + height : offset.dy - arrowHeight,
-              child: CustomPaint(
-                size: Size(15.0, arrowHeight),
-                painter: TrianglePainter(
-                  isDownArrow: isArrowDown,
-                  color: backgroundColor,
-                ),
-              ),
-            ),
-            // popup content
-            _buildPopup(
-              offset: offset,
-              height: height,
-              padding: padding,
-              text: text,
-              textStyle: textStyle,
-              width: _width,
-              haveOffsetRight: haveOffsetRight,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  _buildPopup({
-    required Offset offset,
-    required EdgeInsetsGeometry padding,
-    required double height,
-    required double width,
-    required String text,
-    required TextStyle textStyle,
-    required bool haveOffsetRight,
-  }) {
-    if (_isInCenter) {
-      return Padding(
-        padding: EdgeInsets.only(
-          top: offset.dy,
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            _buildBaloon(
-              height: height,
-              padding: padding,
-              text: text,
-              textStyle: textStyle,
-              width: width,
-            ),
-          ],
-        ),
-      );
-    } else if (haveOffsetRight) {
-      return Padding(
-        padding: EdgeInsets.only(
-          top: offset.dy,
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            const Spacer(),
-            _buildBaloon(
-              height: height,
-              padding: padding,
-              text: text,
-              textStyle: textStyle,
-              width: width,
-            ),
-            SizedBox(
-              width: _offsetRight,
-            )
-          ],
-        ),
-      );
-    } else {
-      return Padding(
-        padding: EdgeInsets.only(
-          top: offset.dy,
-          left: _offsetLeft,
-          right: _offsetRight,
-        ),
-        child: _buildBaloon(
-          height: height,
-          padding: padding,
-          text: text,
-          textStyle: textStyle,
-          width: _width,
-        ),
-      );
-    }
-  }
-
-  _buildBaloon({
-    required EdgeInsetsGeometry padding,
-    required double height,
-    required double width,
-    required String text,
-    required TextStyle textStyle,
-  }) {
-    return Container(
-      padding: padding,
-      height: height,
-      constraints: BoxConstraints(
-        maxWidth: width,
-      ),
-      decoration: BoxDecoration(
-        color: backgroundColor,
-        borderRadius: borderRadius,
-        boxShadow: const [
-          BoxShadow(
-            color: Color(0xFF808080),
-            blurRadius: 1.0,
-          ),
-        ],
-      ),
-      child: FittedBox(
-        child: Row(
-          children: [
-            Text(
-              text,
-              style: textStyle,
-              overflow: TextOverflow.ellipsis,
-            ),
-            const SizedBox(
-              width: 16,
-            ),
-            const Icon(
-              Icons.close,
-              color: Colors.white,
-            ),
-          ],
-        ),
-      ),
-    );
   }
 
   /// Dismisses the popup

@@ -1,5 +1,13 @@
 import 'package:flutter/material.dart';
 
+import 'triangle_painter.dart';
+
+enum ParentPosition {
+  left,
+  center,
+  right,
+}
+
 class BaloonOverlayHelper {
   /// Returns globalRect of widget with key [key]
   static Rect getWidgetGlobalRect(GlobalKey key) {
@@ -28,7 +36,7 @@ class BaloonOverlayHelper {
   }
 
   /// Returns calculated widget offset using [context]
-  static Offset calculateOffset({
+  static double calculateTopOffset({
     required BuildContext context,
     required Rect widgetRect,
     required Size screenSize,
@@ -36,27 +44,17 @@ class BaloonOverlayHelper {
     required double height,
     required double arrowHeight,
   }) {
-    double dx = widgetRect.left + widgetRect.width / 2.0 - width / 2.0;
-    if (dx < 10.0) {
-      dx = 10.0;
-    }
-
-    if (dx > screenSize.width && dx > 10.0) {
-      double tempDx = screenSize.width - width - 10;
-      if (tempDx > 10) dx = tempDx;
-    }
-
     double dy = widgetRect.top - height;
     if (dy <= MediaQuery.of(context).padding.top + 50) {
-      // not enough space above, show popup under the widget.
       dy = arrowHeight + widgetRect.height + widgetRect.top;
     } else {
       dy -= arrowHeight;
     }
 
-    return Offset(dx, dy);
+    return dy;
   }
 
+  /// Returns whether the container has space to be on top of the parent
   static bool isArrowDown({
     required BuildContext context,
     required double arrowHeight,
@@ -75,15 +73,15 @@ class BaloonOverlayHelper {
     return haveEnoughtHeight;
   }
 
+  /// Returns calculated vertical offset using [context]
   static List<double> calculateVerticalOffset({
     required GlobalKey widgetKey,
     required Rect widgetRect,
     required Size screenSize,
-    required double offsetLeft,
-    required double offsetRight,
     required bool haveOffsetRight,
     required bool isInCenter,
   }) {
+    double offsetLeft, offsetRight;
     RenderBox renderBox =
         widgetKey.currentContext!.findRenderObject() as RenderBox;
     var offset = renderBox.localToGlobal(Offset.zero);
@@ -106,5 +104,205 @@ class BaloonOverlayHelper {
     }
 
     return [offsetLeft, offsetRight];
+  }
+
+  /// Builds popup for specific [offset]
+  static Widget buildPopupLayout({
+    required BuildContext context,
+    required Color backgroundColor,
+    required BorderRadius borderRadius,
+    required double height,
+    required double width,
+    required Rect parentRect,
+    required bool isArrowDown,
+    required double arrowHeight,
+    required double offsetTop,
+    required double offsetLeft,
+    required double offsetRight,
+    required ParentPosition position,
+    required Function dismiss,
+    required EdgeInsetsGeometry padding,
+    required String text,
+    required TextStyle textStyle,
+  }) {
+    var centerWidgetFather = parentRect.left + parentRect.width / 2.0 - 7.5;
+
+    return GestureDetector(
+      behavior: HitTestBehavior.translucent,
+      onTap: () {
+        dismiss();
+      },
+      child: Material(
+        color: Colors.transparent,
+        child: Stack(
+          children: <Widget>[
+            // triangle arrow
+            Positioned(
+              left: centerWidgetFather,
+              top: isArrowDown ? offsetTop + height : offsetTop - arrowHeight,
+              child: CustomPaint(
+                size: Size(15.0, arrowHeight),
+                painter: TrianglePainter(
+                  isDownArrow: isArrowDown,
+                  color: backgroundColor,
+                ),
+              ),
+            ),
+            // popup content
+            _buildPopup(
+              context: context,
+              position: position,
+              backgroundColor: backgroundColor,
+              borderRadius: borderRadius,
+              height: height,
+              width: width,
+              padding: padding,
+              text: text,
+              textStyle: textStyle,
+              offsetTop: offsetTop,
+              offsetLeft: offsetLeft,
+              offsetRight: offsetRight,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  static _buildPopup({
+    required BuildContext context,
+    required Color backgroundColor,
+    required BorderRadius borderRadius,
+    required EdgeInsetsGeometry padding,
+    required double height,
+    required double width,
+    required String text,
+    required TextStyle textStyle,
+    required double offsetTop,
+    required double offsetLeft,
+    required double offsetRight,
+    required ParentPosition position,
+  }) {
+    Padding child;
+    switch (position) {
+      case ParentPosition.center:
+        child = Padding(
+          padding: EdgeInsets.only(
+            top: offsetTop,
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              _buildBaloon(
+                context: context,
+                backgroundColor: backgroundColor,
+                borderRadius: borderRadius,
+                height: height,
+                padding: padding,
+                text: text,
+                textStyle: textStyle,
+                width: width,
+              ),
+            ],
+          ),
+        );
+        break;
+      case ParentPosition.right:
+        child = Padding(
+          padding: EdgeInsets.only(
+            top: offsetTop,
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const Spacer(),
+              _buildBaloon(
+                context: context,
+                backgroundColor: backgroundColor,
+                borderRadius: borderRadius,
+                height: height,
+                padding: padding,
+                text: text,
+                textStyle: textStyle,
+                width: width,
+              ),
+              Flexible(
+                child: SizedBox(
+                  width: offsetRight,
+                ),
+              )
+            ],
+          ),
+        );
+        break;
+      default:
+        child = Padding(
+          padding: EdgeInsets.only(
+            top: offsetTop,
+            left: offsetLeft,
+            right: offsetRight,
+          ),
+          child: _buildBaloon(
+            context: context,
+            backgroundColor: backgroundColor,
+            borderRadius: borderRadius,
+            height: height,
+            padding: padding,
+            text: text,
+            textStyle: textStyle,
+            width: width,
+          ),
+        );
+        break;
+    }
+    return child;
+  }
+
+  static _buildBaloon({
+    required BuildContext context,
+    required Color backgroundColor,
+    required BorderRadius borderRadius,
+    required EdgeInsetsGeometry padding,
+    required double height,
+    required double width,
+    required String text,
+    required TextStyle textStyle,
+  }) {
+    return Container(
+      padding: padding,
+      height: height,
+      constraints: BoxConstraints(
+        maxWidth: width,
+      ),
+      decoration: BoxDecoration(
+        color: backgroundColor,
+        borderRadius: borderRadius,
+        boxShadow: const [
+          BoxShadow(
+            color: Color(0xFF808080),
+            blurRadius: 1.0,
+          ),
+        ],
+      ),
+      child: FittedBox(
+        child: Row(
+          children: [
+            Text(
+              text,
+              style: textStyle,
+              overflow: TextOverflow.ellipsis,
+            ),
+            const SizedBox(
+              width: 16,
+            ),
+            const Icon(
+              Icons.close,
+              color: Colors.white,
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
