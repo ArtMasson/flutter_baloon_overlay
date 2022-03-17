@@ -237,18 +237,28 @@ class BaloonOverlayHelper {
         child = Padding(
           padding: EdgeInsets.only(
             top: offsetTop,
-            left: offsetLeft,
-            right: offsetRight,
           ),
-          child: _buildBaloon(
-            context: context,
-            backgroundColor: backgroundColor,
-            borderRadius: borderRadius,
-            height: height,
-            padding: padding,
-            text: text,
-            textStyle: textStyle,
-            width: width,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Flexible(
+                child: SizedBox(
+                  width: offsetLeft,
+                ),
+              ),
+              _buildBaloon(
+                context: context,
+                backgroundColor: backgroundColor,
+                borderRadius: borderRadius,
+                height: height,
+                padding: padding,
+                text: text,
+                textStyle: textStyle,
+                width: width,
+              ),
+              const Spacer(),
+            ],
           ),
         );
         break;
